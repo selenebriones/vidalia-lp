@@ -1,25 +1,29 @@
 ---
 import Photo from './Photo.astro';
 import { SITE, DISTINTO } from '../data/site';
+
+const FOTOS = [
+  { src: '/img/sala-vidalia.webp', alt: 'Sala Vidalia climatizada con salas de estar', caption: 'Un espacio que abraza: sala climatizada, salas de estar y amplio estacionamiento.' },
+  { src: '/img/cafeteria-vidalia.webp', alt: 'Cafetería de especialidad de Vidalia', caption: 'Cafetería de especialidad' },
+];
 ---
 
 <section id="instalaciones" class="py-16 sm:py-24">
   <div class="mx-auto max-w-7xl px-4">
-    <header data-reveal class="max-w-3xl">
-      <p class="font-script text-2xl text-vidalia-gold">Espacios para despedir con paz</p>
-      <h2 class="mt-2 text-3xl font-extrabold tracking-tight text-vidalia-blue sm:text-4xl">
+    <header data-reveal class="mx-auto max-w-3xl text-center">
+      <h2 class="text-3xl font-extrabold tracking-tight text-vidalia-blue sm:text-4xl">
         Nosotros lo hacemos distinto, nos encargamos de cada detalle.
       </h2>
-      <span data-filete class="mt-5 block h-0.5 w-20 origin-left rounded-full bg-gradient-to-r from-vidalia-gold to-vidalia-gold/20" aria-hidden="true"></span>
+      <span data-filete class="mx-auto mt-5 block h-0.5 w-20 rounded-full bg-gradient-to-r from-vidalia-gold/30 via-vidalia-gold to-vidalia-gold/30" aria-hidden="true"></span>
     </header>
 
-    <div class="mt-12 grid gap-10 lg:grid-cols-[1.5fr_1fr]">
-      <!-- Columna izquierda: foto principal y ubicación -->
-      <div class="flex flex-col gap-10">
-        <button type="button" data-arch-reveal data-lightbox="/img/sala-vidalia.webp" data-caption="Un espacio que abraza: sala climatizada, salas de estar y amplio estacionamiento." class="group relative block aspect-[4/3] w-full cursor-zoom-in overflow-hidden border-2 border-vidalia-gold shadow-soft [border-radius:12rem_12rem_1.5rem_1.5rem] sm:[border-radius:18rem_18rem_1.5rem_1.5rem]">
+    <!-- Primero el espacio: fotos en recuadros normales. -->
+    <div data-reveal-stagger class="mt-12 grid gap-6 md:grid-cols-2">
+      {FOTOS.map((f) => (
+        <button type="button" data-lightbox={f.src} data-caption={f.caption} class="group relative block aspect-[4/3] w-full cursor-zoom-in overflow-hidden rounded-3xl border border-vidalia-gold/40 shadow-soft">
           <!-- La capa es más alta que el marco para que la foto pueda deslizarse dentro (parallax). -->
           <div data-parallax class="absolute inset-x-0 -top-[8%] h-[116%]">
-            <Photo src="/img/sala-vidalia.webp" alt="Sala Vidalia climatizada con salas de estar" class="transition duration-700 group-hover:scale-105" />
+            <Photo src={f.src} alt={f.alt} class="transition duration-700 group-hover:scale-105" />
           </div>
           <span class="pointer-events-none absolute inset-0 grid place-items-center bg-vidalia-deep/0 transition duration-500 group-hover:bg-vidalia-deep/25">
             <span class="flex translate-y-3 items-center gap-2 rounded-full bg-white/95 px-4 py-2 text-sm font-semibold text-vidalia-blue opacity-0 shadow-soft transition duration-500 group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100">
@@ -27,62 +31,29 @@ import { SITE, DISTINTO } from '../data/site';
             </span>
           </span>
         </button>
+      ))}
+    </div>
 
-        <div id="ubicacion" data-reveal class="grid gap-6 rounded-3xl border border-vidalia-gold/40 bg-vidalia-ivory/40 p-6 sm:grid-cols-[1fr_1.1fr] sm:p-8">
-          <div>
-            <h3 class="flex items-center gap-2 text-2xl font-bold text-vidalia-blue">
-              <i class="ph-fill ph-map-pin text-vidalia-gold" aria-hidden="true"></i> Ubicación
-            </h3>
-            <p class="mt-4 leading-relaxed text-vidalia-blue/75">{SITE.address}</p>
-            <p class="mt-3 text-vidalia-blue/75">
-              Te recibimos las 24 horas · <a href={SITE.phoneHref} class="font-bold whitespace-nowrap text-vidalia-blue hover:text-vidalia-gold">{SITE.phone}</a>
-            </p>
-            <a href={SITE.mapsHref} target="_blank" rel="noopener" class="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-vidalia-blue underline decoration-vidalia-gold underline-offset-4 hover:text-vidalia-gold">
-              Cómo llegar <i class="ph-bold ph-arrow-up-right" aria-hidden="true"></i>
-            </a>
-          </div>
-          <iframe
-            src={SITE.mapsEmbed}
-            title="Mapa de Vidalia Funerales Memorables"
-            loading="lazy"
-            referrerpolicy="no-referrer-when-downgrade"
-            class="h-56 w-full rounded-2xl border-0 bg-vidalia-beige sm:h-full sm:min-h-56"
-          ></iframe>
-        </div>
-      </div>
-
-      <!-- Columna derecha: foto secundaria, diferenciadores y CTA -->
-      <div class="flex flex-col">
-        <button type="button" data-reveal data-lightbox="/img/cafeteria-vidalia.webp" data-caption="Cafetería de especialidad" class="group relative block aspect-[4/3] w-full cursor-zoom-in overflow-hidden rounded-3xl border border-vidalia-gold/40">
-          <div data-parallax class="absolute inset-x-0 -top-[8%] h-[116%]">
-            <Photo src="/img/cafeteria-vidalia.webp" alt="Cafetería de especialidad de Vidalia" class="transition duration-700 group-hover:scale-105" />
-          </div>
-          <span class="pointer-events-none absolute inset-0 grid place-items-center bg-vidalia-deep/0 transition duration-500 group-hover:bg-vidalia-deep/25">
-            <span class="flex translate-y-3 items-center gap-2 rounded-full bg-white/95 px-4 py-2 text-sm font-semibold text-vidalia-blue opacity-0 shadow-soft transition duration-500 group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100">
-              <i class="ph-bold ph-magnifying-glass-plus" aria-hidden="true"></i> Ver foto
-            </span>
+    <!-- Beneficios en franja, igual que la de confianza. -->
+    <ul data-reveal-stagger class="mt-10 grid grid-cols-2 gap-4 border-y border-vidalia-beige py-8 lg:grid-cols-4">
+      {DISTINTO.map((d) => (
+        <li class="group flex flex-col items-center gap-3 rounded-2xl p-3 text-center transition duration-300 hover:bg-vidalia-ivory/60 sm:flex-row sm:text-left">
+          <span class="grid size-12 shrink-0 place-items-center rounded-full bg-vidalia-ivory text-2xl text-vidalia-gold transition duration-300 group-hover:scale-110 group-hover:bg-vidalia-blue">
+            <i class:list={['ph-duotone', d.icon]} aria-hidden="true"></i>
           </span>
-        </button>
+          <p class="text-sm leading-snug text-vidalia-blue/70">
+            <strong class="block text-base font-extrabold text-vidalia-blue">{d.title}</strong>
+            {d.text}
+          </p>
+        </li>
+      ))}
+    </ul>
 
-        <ul data-reveal-stagger class="mt-8 space-y-6">
-          {DISTINTO.map((d) => (
-            <li class="group flex gap-4">
-              <span class="grid size-12 shrink-0 place-items-center rounded-2xl bg-vidalia-ivory text-2xl text-vidalia-gold transition duration-300 group-hover:-rotate-6 group-hover:bg-vidalia-blue">
-                <i class:list={['ph-duotone', d.icon]} aria-hidden="true"></i>
-              </span>
-              <div class="self-center">
-                <h3 class="font-bold text-vidalia-blue">{d.title}</h3>
-                {d.text && <p class="mt-1 text-sm leading-relaxed text-vidalia-blue/70">{d.text}</p>}
-              </div>
-            </li>
-          ))}
-        </ul>
-
-        <a href={SITE.visitaHref} target="_blank" rel="noopener" class="btn mt-9 bg-vidalia-blue text-white hover:bg-vidalia-deep">
-          <i class="ph-bold ph-calendar-check" aria-hidden="true"></i>
-          Agenda una visita a nuestras salas
-        </a>
-      </div>
+    <div data-reveal class="mt-10 flex justify-center">
+      <a href={SITE.visitaHref} target="_blank" rel="noopener" class="btn bg-vidalia-blue text-white hover:bg-vidalia-deep">
+        <i class="ph-bold ph-calendar-check" aria-hidden="true"></i>
+        Agenda una visita a nuestras salas
+      </a>
     </div>
   </div>
 </section>
