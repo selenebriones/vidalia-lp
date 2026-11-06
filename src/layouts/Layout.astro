@@ -94,7 +94,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
 
           gsap.utils.toArray('[data-reveal-stagger]').forEach((group) => {
             gsap.fromTo(
-              group.children,
+              [...group.children].filter((c) => !c.hasAttribute('data-split')),
               { y: 30, opacity: 0 },
               {
                 y: 0,
@@ -118,6 +118,49 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
               scrollTrigger: { trigger: '#inicio', start: 'top top', end: 'bottom top', scrub: true },
             });
           }
+
+          // Titular del hero: se parte en palabras y sube línea por línea desde una máscara.
+          gsap.utils.toArray('[data-split]').forEach((title) => {
+            const words = title.textContent.trim().split(/\s+/);
+            title.setAttribute('aria-label', words.join(' '));
+            title.textContent = '';
+            const inners = words.map((w, i) => {
+              const mask = document.createElement('span');
+              mask.className = 'split-mask';
+              mask.setAttribute('aria-hidden', 'true');
+              const inner = document.createElement('span');
+              inner.className = 'split-word';
+              inner.textContent = w;
+              mask.append(inner);
+              title.append(mask);
+              if (i < words.length - 1) title.append(' ');
+              return inner;
+            });
+            title.style.visibility = 'visible';
+            // Las palabras de un mismo renglón suben juntas.
+            const tops = [...new Set(inners.map((el) => el.parentElement.offsetTop))];
+            const lineOf = inners.map((el) => tops.indexOf(el.parentElement.offsetTop));
+            gsap.fromTo(
+              inners,
+              { yPercent: 110 },
+              { yPercent: 0, duration: 1.1, ease: 'power3.out', delay: 0.2, stagger: (i) => lineOf[i] * 0.15 },
+            );
+          });
+
+          // Filetes dorados que se trazan bajo los títulos de sección.
+          gsap.utils.toArray('[data-filete]').forEach((line) => {
+            gsap.fromTo(
+              line,
+              { scaleX: 0 },
+              {
+                scaleX: 1,
+                duration: 1.2,
+                ease: 'power3.inOut',
+                delay: 0.35,
+                scrollTrigger: { trigger: line, start: 'top 90%', once: true },
+              },
+            );
+          });
 
           // Instalaciones: el arco de la sala se abre de abajo hacia arriba y la foto se asienta.
           gsap.utils.toArray('[data-arch-reveal]').forEach((frame) => {

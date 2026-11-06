@@ -88,6 +88,45 @@
   .js [data-arch-reveal] {
     clip-path: inset(100% 0 0 0);
   }
+  /* Titular del hero: se oculta hasta que el JS lo parte en palabras y lo anima por líneas. */
+  .js [data-split] {
+    visibility: hidden;
+  }
+  .js [data-reveal-stagger] > [data-split] {
+    opacity: 1;
+  }
+  /* Filetes dorados: arrancan sin trazar. */
+  .js [data-filete] {
+    transform: scaleX(0);
+  }
+
+  /* Destello dorado que cruza la tarjeta del Paquete Vidalia. */
+  .destello::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(105deg, transparent 35%, rgb(200 160 48 / 0.22) 48%, rgb(255 255 255 / 0.12) 50%, rgb(200 160 48 / 0.22) 52%, transparent 65%);
+    transform: translateX(-100%);
+    animation: destello 7s ease-in-out 2s infinite;
+  }
+}
+
+@keyframes destello {
+  0% { transform: translateX(-100%); }
+  22%, 100% { transform: translateX(100%); }
+}
+
+/* Palabras del titular del hero: cada una sube desde detrás de su propia máscara.
+   El padding/margen negativo evita recortar acentos y descendentes. */
+.split-mask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding: 0.1em 0 0.14em;
+  margin: -0.1em 0 -0.14em;
+}
+.split-word {
+  display: inline-block;
 }
 
 /* Brillo dorado que sigue al cursor sobre las tarjetas (las coordenadas las pone el Layout). */

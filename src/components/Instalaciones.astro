@@ -10,6 +10,7 @@ import { SITE, DISTINTO } from '../data/site';
       <h2 class="mt-2 text-3xl font-extrabold tracking-tight text-vidalia-blue sm:text-4xl">
         Nosotros lo hacemos distinto, nos encargamos de cada detalle.
       </h2>
+      <span data-filete class="mt-5 block h-0.5 w-20 origin-left rounded-full bg-gradient-to-r from-vidalia-gold to-vidalia-gold/20" aria-hidden="true"></span>
     </header>
 
     <div class="mt-12 grid gap-10 lg:grid-cols-[1.5fr_1fr]">
@@ -103,17 +104,60 @@ import { SITE, DISTINTO } from '../data/site';
     if (!dlg || !dlg.showModal) return;
     const img = dlg.querySelector('img');
     const cap = dlg.querySelector('figcaption');
+    const closeBtn = dlg.querySelector('[data-close]');
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+    const EASE = 'cubic-bezier(.22,.8,.24,1)';
+    let origin = null;
+    let closing = false;
+
+    // Transformación que lleva la foto ampliada al lugar y tamaño de su miniatura.
+    const fromThumb = () => {
+      const t = origin.getBoundingClientRect();
+      const r = img.getBoundingClientRect();
+      const dx = t.left + t.width / 2 - (r.left + r.width / 2);
+      const dy = t.top + t.height / 2 - (r.top + r.height / 2);
+      return `translate(${dx}px, ${dy}px) scale(${t.width / r.width})`;
+    };
+    const fadeBackdrop = (frames, duration, fill = 'none') => {
+      try { dlg.animate(frames, { duration, fill, easing: 'ease-out', pseudoElement: '::backdrop' }); } catch (_) {}
+    };
+
     document.querySelectorAll('[data-lightbox]').forEach((btn) => {
-      btn.addEventListener('click', () => {
+      btn.addEventListener('click', async () => {
+        origin = btn;
         img.src = btn.dataset.lightbox;
         img.alt = btn.querySelector('img')?.alt || '';
         cap.textContent = btn.dataset.caption || '';
+        try { await img.decode(); } catch (_) {}
         dlg.showModal();
-        img.animate?.([{ opacity: 0, transform: 'scale(.96)' }, { opacity: 1, transform: 'scale(1)' }], { duration: 300, easing: 'ease-out' });
+        if (reduce.matches || !img.animate) return;
+        // La foto crece desde su miniatura; el pie y el botón aparecen después.
+        img.animate([{ transform: fromThumb(), opacity: 0.5 }, { transform: 'none', opacity: 1 }], { duration: 550, easing: EASE });
+        [cap, closeBtn].forEach((el) => el.animate([{ opacity: 0 }, { opacity: 0 }, { opacity: 1 }], { duration: 650, easing: 'ease-out' }));
+        fadeBackdrop([{ opacity: 0 }, { opacity: 1 }], 450);
       });
     });
-    dlg.querySelector('[data-close]').addEventListener('click', () => dlg.close());
+
+    // Al cerrar, la foto regresa a su miniatura.
+    const close = () => {
+      if (!dlg.open || closing) return;
+      if (reduce.matches || !img.animate || !origin) { dlg.close(); return; }
+      closing = true;
+      [cap, closeBtn].forEach((el) => el.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 150, fill: 'forwards' }));
+      fadeBackdrop([{ opacity: 1 }, { opacity: 0 }], 420, 'forwards');
+      const anim = img.animate([{ transform: 'none', opacity: 1 }, { transform: fromThumb(), opacity: 0.4 }], { duration: 420, easing: EASE, fill: 'forwards' });
+      anim.onfinish = () => {
+        dlg.close();
+        dlg.getAnimations({ subtree: true }).forEach((a) => a.cancel());
+        closing = false;
+        origin.focus({ preventScroll: true });
+      };
+    };
+
+    closeBtn.addEventListener('click', close);
     // Clic fuera de la foto (en el fondo) también cierra.
-    dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+    dlg.addEventListener('click', (e) => { if (e.target === dlg) close(); });
+    // Esc: animar en lugar de cerrar de golpe.
+    dlg.addEventListener('cancel', (e) => { e.preventDefault(); close(); });
   })();
 </script>
