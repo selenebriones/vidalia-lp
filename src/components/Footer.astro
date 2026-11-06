@@ -1,0 +1,69 @@
+---
+import { SITE } from '../data/site';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="relative isolate overflow-hidden bg-vidalia-deep text-white">
+  <!-- Fondo: la fachada de noche. Arriba se deja ver (su letrero iluminado hace de logo) y el velo
+       azul se cierra hacia abajo para que las tarjetas se lean. -->
+  <img
+    src="/img/fachada-noche-vidalia.webp"
+    alt=""
+    width="1200"
+    height="800"
+    loading="lazy"
+    decoding="async"
+    data-footer-bg
+    class="absolute inset-x-0 top-0 -z-20 h-80 w-full object-cover object-center sm:h-[26rem] [mask-image:linear-gradient(to_bottom,#000_65%,transparent)] md:inset-0 md:h-full md:object-[center_70%] md:[mask-image:none]"
+  />
+  <div class="absolute inset-0 -z-10 bg-gradient-to-b from-vidalia-deep/10 via-vidalia-deep/75 via-55% to-vidalia-deep" aria-hidden="true"></div>
+
+  <div class="mx-auto max-w-7xl px-4 pt-60 pb-12 sm:pt-80 lg:pt-96">
+    <h2 class="sr-only">Vidalia Funerales Memorables</h2>
+    <p class="text-center font-script text-2xl text-vidalia-gold drop-shadow">{SITE.slogan}</p>
+
+    <div class="mt-8 grid gap-6 md:grid-cols-3">
+      <div class="rounded-3xl border border-white/10 bg-vidalia-deep/60 p-7 backdrop-blur-sm">
+        <h3 class="flex items-center gap-2 text-lg font-bold">
+          <i class="ph-fill ph-map-pin text-vidalia-gold" aria-hidden="true"></i> Ubicación
+        </h3>
+        <p class="mt-4 text-sm leading-relaxed text-white/75">{SITE.address}</p>
+        <p class="mt-2 text-sm text-white/75">Te recibimos las 24 horas</p>
+        <a href={SITE.mapsHref} target="_blank" rel="noopener" class="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-vidalia-gold hover:text-white">
+          Cómo llegar <i class="ph-bold ph-arrow-up-right" aria-hidden="true"></i>
+        </a>
+      </div>
+
+      <div class="flex flex-col rounded-3xl border border-white/10 bg-vidalia-deep/60 p-7 backdrop-blur-sm">
+        <h3 class="flex items-center gap-2 text-lg font-bold">
+          <i class="ph-fill ph-phone-call text-vidalia-gold" aria-hidden="true"></i> Llamar 24/7 · {SITE.phone}
+        </h3>
+        <p class="mt-4 mb-6 text-sm text-white/75">Un Agente Funerario te atiende de inmediato, a cualquier hora.</p>
+        <a href={SITE.phoneHref} class="btn mt-auto w-full bg-vidalia-gold text-white hover:bg-white hover:text-vidalia-blue">
+          Llamar ahora
+        </a>
+      </div>
+
+      <div class="flex flex-col rounded-3xl border border-white/10 bg-vidalia-deep/60 p-7 backdrop-blur-sm">
+        <h3 class="flex items-center gap-2 text-lg font-bold">
+          <i class="ph-fill ph-shield-check text-vidalia-gold" aria-hidden="true"></i> Contratar Paquete Vidalia
+        </h3>
+        <p class="mt-4 mb-6 text-sm text-white/75">$238 a la quincena · precio congelado mientras vayas al corriente.</p>
+        <a href={SITE.contratarHref} target="_blank" rel="noopener" class="btn mt-auto w-full border border-white/30 text-white shadow-none hover:bg-white hover:text-vidalia-blue">
+          <i class="ph-bold ph-whatsapp-logo" aria-hidden="true"></i> Contratar por WhatsApp
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="border-t border-white/10">
+    <div class="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-6 text-xs text-white/50 sm:flex-row sm:items-center sm:justify-between">
+      <p>© {year} {SITE.name}. Contrato registrado ante PROFECO núm. {SITE.profeco}.</p>
+      <ul class="flex gap-5">
+        <li><a href="#" class="transition hover:text-white">Aviso de privacidad</a></li>
+        <li><a href="#" class="transition hover:text-white">Términos y condiciones</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>

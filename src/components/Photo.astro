@@ -1,0 +1,26 @@
+---
+// Foto con respaldo: mientras el cliente no entregue la imagen (`src` vacío),
+// muestra un marco cálido con ícono y la etiqueta de lo que va ahí.
+interface Props {
+  src?: string;
+  alt: string;
+  icon?: string;
+  class?: string;
+  eager?: boolean;
+}
+
+const { src, alt, icon = 'ph-image', class: className = '', eager = false } = Astro.props;
+---
+
+{src ? (
+  <img src={src} alt={alt} loading={eager ? 'eager' : 'lazy'} decoding="async" class:list={['h-full w-full object-cover', className]} />
+) : (
+  <div
+    role="img"
+    aria-label={alt}
+    class:list={['flex h-full w-full flex-col items-center justify-center gap-3 bg-gradient-to-br from-vidalia-ivory via-white to-vidalia-beige bg-lienzo text-vidalia-gold', className]}
+  >
+    <i class:list={['ph-light text-5xl', icon]} aria-hidden="true"></i>
+    <span class="px-4 text-center text-xs font-semibold tracking-widest text-vidalia-blue/50 uppercase">IMG · {alt}</span>
+  </div>
+)}

@@ -1,0 +1,32 @@
+---
+import { SITE } from '../data/site';
+---
+
+<div class="fixed inset-x-0 bottom-0 z-40 border-t border-vidalia-beige bg-white/95 px-3 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur-md md:hidden">
+  <div class="grid grid-cols-2 gap-3">
+    <a href={SITE.phoneHref} class="flex items-center justify-center gap-2 rounded-full bg-vidalia-blue py-3.5 font-semibold text-white shadow-md">
+      <i class="ph-bold ph-phone-call" aria-hidden="true"></i> Llamar 24 hrs
+    </a>
+    <a href={SITE.whatsappHref} target="_blank" rel="noopener" class="flex items-center justify-center gap-2 rounded-full bg-vidalia-gold py-3.5 font-semibold text-white shadow-md">
+      <i class="ph-bold ph-whatsapp-logo" aria-hidden="true"></i> WhatsApp
+    </a>
+  </div>
+</div>
+
+<!-- Escritorio: botón flotante de WhatsApp que aparece al pasar el hero (lo muestra el script del Header). -->
+<a
+  id="wa-flotante"
+  href={SITE.whatsappHref}
+  target="_blank"
+  rel="noopener"
+  aria-label="Escríbenos por WhatsApp"
+  class="group fixed right-6 bottom-6 z-40 hidden translate-y-6 items-center gap-3 opacity-0 pointer-events-none transition duration-500 md:flex data-visible:pointer-events-auto data-visible:translate-y-0 data-visible:opacity-100"
+>
+  <span class="rounded-full bg-white px-4 py-2 text-sm font-semibold whitespace-nowrap text-vidalia-blue shadow-soft transition duration-300 group-hover:-translate-x-1">
+    ¿Te ayudamos? Escríbenos
+  </span>
+  <span class="relative grid size-14 place-items-center rounded-full bg-vidalia-gold text-3xl text-white shadow-glow-gold transition duration-300 group-hover:scale-110">
+    <span class="absolute inset-0 animate-ping rounded-full bg-vidalia-gold/40 [animation-duration:2.4s]" aria-hidden="true"></span>
+    <i class="ph-fill ph-whatsapp-logo relative" aria-hidden="true"></i>
+  </span>
+</a>

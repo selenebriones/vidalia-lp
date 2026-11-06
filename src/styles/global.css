@@ -1,0 +1,107 @@
+@import "tailwindcss";
+
+@theme {
+  /* Paleta institucional Vidalia */
+  --color-vidalia-blue: #202C58;   /* titulares, logotipo, elementos principales */
+  --color-vidalia-deep: #10163B;   /* fondos comerciales, footer, banners de contraste */
+  --color-vidalia-gold: #C8A030;   /* isotipo, acentos, filetes y botones destacados */
+  --color-vidalia-ivory: #F0E8D8;  /* fondos cálidos y piezas emocionales */
+  --color-vidalia-beige: #E8E0D0;  /* texturas y fondos secundarios */
+
+  /* Tipografía */
+  --font-sans: "Montserrat", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-script: "Lobster Two", "Georgia", cursive;
+
+  /* Sombras de marca */
+  --shadow-soft: 0 20px 50px -20px rgb(32 44 88 / 0.25);
+  --shadow-glow-gold: 0 24px 60px -18px rgb(200 160 48 / 0.45);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 6rem;
+  }
+  body {
+    background-color: #FFFFFF;
+    color: var(--color-vidalia-blue);
+    font-family: var(--font-sans);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3 {
+    text-wrap: balance;
+  }
+  ::selection {
+    background: var(--color-vidalia-gold);
+    color: #FFFFFF;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-vidalia-gold);
+    outline-offset: 3px;
+  }
+  details > summary::-webkit-details-marker { display: none; }
+}
+
+/* Lobster Two: solo frases emocionales cortas, nunca bloques largos ni precios. */
+@utility font-script {
+  font-family: var(--font-script);
+  font-weight: 700;
+  font-style: italic;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* Marco arqueado inspirado en la arquitectura de las instalaciones. */
+@utility arch {
+  border-radius: 999px 999px 1.5rem 1.5rem;
+}
+
+/* Botones cápsula de marca */
+@utility btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 9999px;
+  padding: 0.85rem 1.6rem;
+  font-weight: 600;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  transition: all 0.25s ease;
+  &:hover { transform: scale(1.05); }
+}
+
+/* Textura sutil para fondos marfil/beige */
+@utility bg-lienzo {
+  background-image: radial-gradient(rgb(200 160 48 / 0.12) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+/* Estado inicial de lo que revela GSAP: solo con JS activo y sin preferencia de movimiento reducido.
+   Si GSAP no carga, el Layout quita la clase .js y todo queda visible. */
+@media (prefers-reduced-motion: no-preference) {
+  .js [data-reveal],
+  .js [data-reveal-stagger] > * {
+    opacity: 0;
+  }
+}
+
+/* Brillo dorado que sigue al cursor sobre las tarjetas (las coordenadas las pone el Layout). */
+[data-spotlight] {
+  position: relative;
+  isolation: isolate;
+}
+[data-spotlight]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  background: radial-gradient(380px circle at var(--x, 50%) var(--y, 50%), rgb(200 160 48 / 0.18), transparent 65%);
+}
+[data-spotlight]:hover::after {
+  opacity: 1;
+}

@@ -1,0 +1,116 @@
+---
+import { FAQS, SITE } from '../data/site';
+---
+
+<section id="faq" class="bg-vidalia-ivory/50 py-16 sm:py-24">
+  <div class="mx-auto grid max-w-7xl gap-12 px-4 lg:grid-cols-[1fr_1.5fr]">
+    <header data-reveal>
+      <p class="font-script text-2xl text-vidalia-gold">Resolvemos tus dudas</p>
+      <h2 class="mt-2 text-3xl font-extrabold tracking-tight text-vidalia-blue sm:text-4xl">Preguntas frecuentes</h2>
+      <p class="mt-4 text-vidalia-blue/70">¿Tienes otra pregunta? Un Agente Funerario te responde a cualquier hora.</p>
+      <div class="mt-7 flex flex-col gap-3 sm:flex-row lg:flex-col xl:flex-row">
+        <a href={SITE.phoneHref} class="btn bg-vidalia-blue text-white hover:bg-vidalia-deep">
+          <i class="ph-bold ph-phone-call" aria-hidden="true"></i>
+          {SITE.phone}
+        </a>
+        <a href={SITE.whatsappHref} target="_blank" rel="noopener" class="btn border border-vidalia-gold bg-white text-vidalia-blue hover:bg-vidalia-gold hover:text-white">
+          <i class="ph-bold ph-whatsapp-logo" aria-hidden="true"></i>
+          WhatsApp
+        </a>
+      </div>
+    </header>
+
+    <div data-reveal-stagger data-faq class="space-y-4">
+      {FAQS.map((f, i) => (
+        <details class="group rounded-2xl border border-vidalia-gold/40 bg-white px-6 transition-shadow duration-300 open:shadow-soft hover:border-vidalia-gold" open={i === 0}>
+          <summary class="flex cursor-pointer list-none items-center justify-between gap-6 py-5 text-left font-bold text-vidalia-blue">
+            {f.q}
+            <span class="grid size-8 shrink-0 place-items-center rounded-full bg-vidalia-ivory text-vidalia-gold transition duration-300 group-open:rotate-45 group-open:bg-vidalia-gold group-open:text-white">
+              <i class="ph-bold ph-plus" aria-hidden="true"></i>
+            </span>
+          </summary>
+          <div data-faq-body class="overflow-hidden">
+            <div class="pb-6 leading-relaxed text-vidalia-blue/75">
+              {f.a && <p>{f.a}</p>}
+              {f.list && (
+                <div data-checklist>
+                  <p class="mb-3 text-sm font-medium text-vidalia-blue">Marca los que ya tienes:</p>
+                  <ul class="space-y-2">
+                    {f.list.map((item) => (
+                      <li>
+                        <label class="flex cursor-pointer items-start gap-3 rounded-xl px-2 py-1.5 transition hover:bg-vidalia-ivory/70">
+                          <input type="checkbox" class="peer sr-only" />
+                          <span class="mt-0.5 grid size-5 shrink-0 place-items-center rounded-md border-2 border-vidalia-gold/60 text-xs text-transparent transition peer-checked:border-vidalia-gold peer-checked:bg-vidalia-gold peer-checked:text-white peer-focus-visible:ring-2 peer-focus-visible:ring-vidalia-gold/40">
+                            <i class="ph-bold ph-check" aria-hidden="true"></i>
+                          </span>
+                          <span class="transition peer-checked:text-vidalia-blue/45 peer-checked:line-through">{item}</span>
+                        </label>
+                      </li>
+                    ))}
+                  </ul>
+                  <div class="mt-4 h-1.5 overflow-hidden rounded-full bg-vidalia-beige">
+                    <div data-check-bar class="h-full w-0 rounded-full bg-vidalia-gold transition-[width] duration-500"></div>
+                  </div>
+                  <p data-check-status class="mt-3 text-sm font-medium text-vidalia-blue" aria-live="polite">
+                    Tienes 0 de {f.list.length}.
+                  </p>
+                </div>
+              )}
+              {f.after && (
+                <p class="mt-3">
+                  {f.after}{' '}
+                  <a href={SITE.whatsappHref} target="_blank" rel="noopener" class="font-semibold text-vidalia-blue underline decoration-vidalia-gold underline-offset-4 hover:text-vidalia-gold">Pregúntale a un Agente</a>
+                </p>
+              )}
+            </div>
+          </div>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script is:inline>
+  (() => {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const items = [...document.querySelectorAll('[data-faq] details')];
+
+    // Acordeón animado: abre una pregunta a la vez.
+    const open = (d) => {
+      d.open = true;
+      if (reduce) return;
+      const body = d.querySelector('[data-faq-body]');
+      body.animate([{ height: '0px', opacity: 0 }, { height: `${body.scrollHeight}px`, opacity: 1 }], { duration: 380, easing: 'cubic-bezier(.2,.7,.2,1)' });
+    };
+    const close = (d) => {
+      if (!d.open) return;
+      if (reduce) { d.open = false; return; }
+      const body = d.querySelector('[data-faq-body]');
+      const anim = body.animate([{ height: `${body.offsetHeight}px`, opacity: 1 }, { height: '0px', opacity: 0 }], { duration: 260, easing: 'ease-in' });
+      anim.onfinish = () => { d.open = false; };
+    };
+    items.forEach((d) => {
+      d.querySelector('summary').addEventListener('click', (e) => {
+        e.preventDefault();
+        if (d.open) return close(d);
+        items.filter((o) => o !== d).forEach(close);
+        open(d);
+      });
+    });
+
+    // Lista de documentos: cuenta los que ya tienes.
+    document.querySelectorAll('[data-checklist]').forEach((list) => {
+      const boxes = [...list.querySelectorAll('input[type=checkbox]')];
+      const bar = list.querySelector('[data-check-bar]');
+      const status = list.querySelector('[data-check-status]');
+      const update = () => {
+        const n = boxes.filter((b) => b.checked).length;
+        bar.style.width = `${(n / boxes.length) * 100}%`;
+        status.textContent = n === boxes.length
+          ? '¡Listo! Tienes todos los documentos.'
+          : `Tienes ${n} de ${boxes.length}. Te faltan ${boxes.length - n}.`;
+      };
+      boxes.forEach((b) => b.addEventListener('change', update));
+    });
+  })();
+</script>

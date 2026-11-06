@@ -1,0 +1,61 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Hero from '../components/Hero.astro';
+import TrustStrip from '../components/TrustStrip.astro';
+import Services from '../components/Services.astro';
+import Instalaciones from '../components/Instalaciones.astro';
+import Faq from '../components/Faq.astro';
+import Footer from '../components/Footer.astro';
+import MobileActionBar from '../components/MobileActionBar.astro';
+import { SITE, FAQS } from '../data/site';
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'FuneralHome',
+      name: SITE.name,
+      slogan: SITE.slogan,
+      telephone: SITE.phoneHref.replace('tel:', ''),
+      openingHours: 'Mo-Su 00:00-23:59',
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: 'Lat. Lib. Gobernadora Griselda Álvarez 502, Senderos de Rancho Blanco',
+        addressLocality: 'Villa de Álvarez',
+        addressRegion: 'Colima',
+        addressCountry: 'MX',
+      },
+      aggregateRating: { '@type': 'AggregateRating', ratingValue: '5.0', reviewCount: '22' },
+    },
+    {
+      '@type': 'FAQPage',
+      mainEntity: FAQS.map((f) => ({
+        '@type': 'Question',
+        name: f.q,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: [f.a, f.list?.join(', '), f.after].filter(Boolean).join(' '),
+        },
+      })),
+    },
+  ],
+};
+---
+
+<Layout
+  title="Funeraria en Colima 24/7 y previsión funeraria | Vidalia Funerales Memorables"
+  description="Funeraria en Colima: atención inmediata 24/7, precio claro y por escrito, y Paquete Vidalia de previsión desde $238 a la quincena. Llámanos al 312 140 8432."
+  schema={schema}
+>
+  <Header />
+  <main id="contenido">
+    <Hero />
+    <TrustStrip />
+    <Services />
+    <Instalaciones />
+    <Faq />
+  </main>
+  <Footer />
+  <MobileActionBar />
+</Layout>

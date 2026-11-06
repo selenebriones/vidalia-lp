@@ -1,0 +1,112 @@
+---
+import Logo from './Logo.astro';
+import { NAV, SITE } from '../data/site';
+---
+
+<!-- Barra dorada de progreso de lectura -->
+<div id="progreso" class="fixed inset-x-0 top-0 z-[60] h-[3px] origin-left scale-x-0 bg-gradient-to-r from-vidalia-gold/70 to-vidalia-gold" aria-hidden="true"></div>
+
+<header id="site-header" class="group sticky top-0 z-50 border-b border-neutral-100 bg-white/90 backdrop-blur-md transition-shadow duration-300 data-scrolled:shadow-soft">
+  <div class="mx-auto flex h-20 max-w-7xl items-center justify-between gap-6 px-4 transition-[height] duration-300 group-data-scrolled:h-16">
+    <a href="#inicio" aria-label="Vidalia Funerales Memorables, ir al inicio">
+      <Logo class="h-11 transition-[height] duration-300 group-data-scrolled:h-9 sm:h-12 sm:group-data-scrolled:h-10" />
+    </a>
+
+    <nav aria-label="Principal" class="hidden xl:block">
+      <ul class="flex items-center gap-7 text-sm font-medium text-vidalia-blue/80">
+        {NAV.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              data-nav-link
+              class="relative py-2 whitespace-nowrap transition after:absolute after:inset-x-0 after:-bottom-0.5 after:h-0.5 after:origin-left after:scale-x-0 after:rounded-full after:bg-vidalia-gold after:transition hover:text-vidalia-blue hover:after:scale-x-100 aria-[current=true]:font-semibold aria-[current=true]:text-vidalia-blue aria-[current=true]:after:scale-x-100"
+            >
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <a href={SITE.whatsappHref} target="_blank" rel="noopener" class="btn hidden bg-vidalia-blue text-sm text-white hover:bg-vidalia-deep sm:inline-flex">
+        <i class="ph-bold ph-headset" aria-hidden="true"></i>
+        Cotizar / Solicitar Asistencia
+      </a>
+      <button
+        id="menu-toggle"
+        type="button"
+        class="grid size-11 place-items-center rounded-full text-2xl text-vidalia-blue transition hover:bg-vidalia-ivory xl:hidden"
+        aria-expanded="false"
+        aria-controls="menu-movil"
+        aria-label="Abrir menú"
+      >
+        <i class="ph ph-list" aria-hidden="true"></i>
+      </button>
+    </div>
+  </div>
+
+  <nav id="menu-movil" aria-label="Menú móvil" class="hidden border-t border-neutral-100 bg-white xl:hidden">
+    <ul class="mx-auto flex max-w-7xl flex-col px-4 py-3">
+      {NAV.map((item) => (
+        <li>
+          <a href={item.href} class="block rounded-xl px-3 py-3 font-medium text-vidalia-blue transition hover:bg-vidalia-ivory">{item.label}</a>
+        </li>
+      ))}
+      <li class="mt-2 sm:hidden">
+        <a href={SITE.whatsappHref} target="_blank" rel="noopener" class="btn w-full bg-vidalia-blue text-white">Cotizar / Solicitar Asistencia</a>
+      </li>
+    </ul>
+  </nav>
+</header>
+
+<script is:inline>
+  (() => {
+    const btn = document.getElementById('menu-toggle');
+    const menu = document.getElementById('menu-movil');
+    if (!btn || !menu) return;
+    const setOpen = (open) => {
+      menu.classList.toggle('hidden', !open);
+      btn.setAttribute('aria-expanded', String(open));
+      btn.setAttribute('aria-label', open ? 'Cerrar menú' : 'Abrir menú');
+      btn.querySelector('i').className = open ? 'ph ph-x' : 'ph ph-list';
+    };
+    btn.addEventListener('click', () => setOpen(menu.classList.contains('hidden')));
+    menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+  })();
+
+  // Al hacer scroll: barra de progreso, header compacto y botón flotante de WhatsApp.
+  (() => {
+    const header = document.getElementById('site-header');
+    const bar = document.getElementById('progreso');
+    let ticking = false;
+    const update = () => {
+      const y = window.scrollY;
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      bar.style.transform = `scaleX(${max > 0 ? Math.min(y / max, 1) : 0})`;
+      header.toggleAttribute('data-scrolled', y > 12);
+      const fab = document.getElementById('wa-flotante');
+      if (fab) fab.toggleAttribute('data-visible', y > window.innerHeight * 0.6);
+      ticking = false;
+    };
+    window.addEventListener('scroll', () => {
+      if (!ticking) { requestAnimationFrame(update); ticking = true; }
+    }, { passive: true });
+    window.addEventListener('DOMContentLoaded', update);
+  })();
+
+  // Resalta en el menú la sección que se está viendo.
+  window.addEventListener('DOMContentLoaded', () => {
+    const links = [...document.querySelectorAll('[data-nav-link]')];
+    const byId = new Map(links.map((a) => [a.getAttribute('href').slice(1), a]));
+    const sections = [...byId.keys()].map((id) => document.getElementById(id)).filter(Boolean);
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        links.forEach((a) => a.removeAttribute('aria-current'));
+        byId.get(e.target.id)?.setAttribute('aria-current', 'true');
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    sections.forEach((s) => io.observe(s));
+  });
+</script>

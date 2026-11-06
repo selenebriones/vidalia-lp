@@ -1,0 +1,12 @@
+---
+// Logotipo oficial (tomado de vidalia.com.mx). "color" para fondos claros, "light" para fondos oscuros.
+interface Props {
+  variant?: 'color' | 'light';
+  class?: string;
+}
+
+const { variant = 'color', class: className = 'h-11 sm:h-12' } = Astro.props;
+const src = variant === 'light' ? '/img/vidalia-logo-tagline-dark.webp' : '/img/vidalia-logo-tagline-light.webp';
+---
+
+<img src={src} alt="Vidalia Funerales Memorables" width="900" height="274" class:list={['w-auto', className]} />

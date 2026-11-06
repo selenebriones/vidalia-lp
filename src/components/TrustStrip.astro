@@ -1,0 +1,25 @@
+---
+import { TRUST } from '../data/site';
+---
+
+<section aria-label="Por qué confiar en Vidalia" class="border-y border-vidalia-beige bg-white">
+  <ul data-reveal-stagger class="mx-auto grid max-w-7xl grid-cols-2 gap-4 px-4 py-8 lg:grid-cols-4">
+    {TRUST.map((t) => (
+      <li class="group flex flex-col items-center gap-3 rounded-2xl p-3 text-center transition duration-300 hover:bg-vidalia-ivory/60 sm:flex-row sm:text-left">
+        <span class="grid size-12 shrink-0 place-items-center rounded-full bg-vidalia-ivory text-2xl text-vidalia-gold transition duration-300 group-hover:scale-110 group-hover:bg-vidalia-blue">
+          <i class:list={['ph-duotone', t.icon]} aria-hidden="true"></i>
+        </span>
+        <p class="text-sm leading-snug text-vidalia-blue/70">
+          <strong class="block text-lg font-extrabold text-vidalia-blue">
+            {t.count ? (
+              <>
+                {t.count.before}<span data-count={t.count.to} data-decimals={t.count.decimals ?? 0} class="tabular-nums">{t.count.to.toFixed(t.count.decimals ?? 0)}</span>{t.count.after}
+              </>
+            ) : t.strong}
+          </strong>
+          {t.text}
+        </p>
+      </li>
+    ))}
+  </ul>
+</section>
