@@ -21,6 +21,7 @@ export const SITE = {
   mapsHref: 'https://www.google.com/maps/search/?api=1&query=Vidalia+Funerales+Memorables+Gobernadora+Griselda+%C3%81lvarez+502+Villa+de+%C3%81lvarez+Colima',
   mapsEmbed: 'https://www.google.com/maps?q=Lat.+Lib.+Gobernadora+Griselda+%C3%81lvarez+502,+Senderos+de+Rancho+Blanco,+Villa+de+%C3%81lvarez,+Col.&output=embed',
   profeco: '3992-2026',
+  privacyHref: 'https://vidalia.com.mx/aviso-de-privacidad/',
 };
 
 export const NAV = [
