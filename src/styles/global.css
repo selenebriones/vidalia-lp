@@ -84,10 +84,6 @@
   .js [data-reveal-stagger] > * {
     opacity: 0;
   }
-  /* El arco de la sala arranca cerrado: se descubre de abajo hacia arriba. */
-  .js [data-arch-reveal] {
-    clip-path: inset(100% 0 0 0);
-  }
   /* Titular del hero: se oculta hasta que el JS lo parte en palabras y lo anima por líneas. */
   .js [data-split] {
     visibility: hidden;

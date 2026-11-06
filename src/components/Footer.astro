@@ -4,27 +4,12 @@ import { SITE } from '../data/site';
 const year = new Date().getFullYear();
 ---
 
-<footer class="relative isolate overflow-hidden bg-vidalia-deep text-white">
-  <!-- Fondo: la fachada de noche. Arriba se deja ver (su letrero iluminado hace de logo) y el velo
-       azul se cierra hacia abajo para que las tarjetas se lean. -->
-  <img
-    src="/img/fachada-noche-vidalia.webp"
-    alt=""
-    width="1200"
-    height="800"
-    loading="lazy"
-    decoding="async"
-    data-footer-bg
-    class="absolute inset-x-0 top-0 -z-20 h-80 w-full object-cover object-center sm:h-[26rem] [mask-image:linear-gradient(to_bottom,#000_65%,transparent)] md:inset-0 md:h-full md:object-[center_70%] md:[mask-image:none]"
-  />
-  <div class="absolute inset-0 -z-10 bg-gradient-to-b from-vidalia-deep/10 via-vidalia-deep/75 via-55% to-vidalia-deep" aria-hidden="true"></div>
-
-  <div class="mx-auto max-w-7xl px-4 pt-60 pb-12 sm:pt-80 lg:pt-96">
+<footer class="bg-vidalia-blue text-white">
+  <div class="mx-auto max-w-7xl px-4 py-14 sm:py-16">
     <h2 class="sr-only">Vidalia Funerales Memorables</h2>
-    <p class="text-center font-script text-2xl text-vidalia-gold drop-shadow">{SITE.slogan}</p>
 
-    <div class="mt-8 grid gap-6 md:grid-cols-3">
-      <div class="rounded-3xl border border-white/10 bg-vidalia-deep/60 p-7 backdrop-blur-sm">
+    <div class="grid gap-6 md:grid-cols-3">
+      <div class="rounded-3xl border border-white/10 bg-white/5 p-7">
         <h3 class="flex items-center gap-2 text-lg font-bold">
           <i class="ph-fill ph-map-pin text-vidalia-gold" aria-hidden="true"></i> Ubicación
         </h3>
@@ -35,7 +20,7 @@ const year = new Date().getFullYear();
         </a>
       </div>
 
-      <div class="flex flex-col rounded-3xl border border-white/10 bg-vidalia-deep/60 p-7 backdrop-blur-sm">
+      <div class="flex flex-col rounded-3xl border border-white/10 bg-white/5 p-7">
         <h3 class="flex items-center gap-2 text-lg font-bold">
           <i class="ph-fill ph-phone-call text-vidalia-gold" aria-hidden="true"></i> Llamar 24/7 · {SITE.phone}
         </h3>
@@ -45,7 +30,7 @@ const year = new Date().getFullYear();
         </a>
       </div>
 
-      <div class="flex flex-col rounded-3xl border border-white/10 bg-vidalia-deep/60 p-7 backdrop-blur-sm">
+      <div class="flex flex-col rounded-3xl border border-white/10 bg-white/5 p-7">
         <h3 class="flex items-center gap-2 text-lg font-bold">
           <i class="ph-fill ph-shield-check text-vidalia-gold" aria-hidden="true"></i> Contratar Paquete Vidalia
         </h3>
