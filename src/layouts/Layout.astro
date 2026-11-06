@@ -119,6 +119,51 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
             });
           }
 
+          // Instalaciones: el arco de la sala se abre de abajo hacia arriba y la foto se asienta.
+          gsap.utils.toArray('[data-arch-reveal]').forEach((frame) => {
+            const layer = frame.querySelector('[data-parallax]');
+            const tl = gsap.timeline({ scrollTrigger: { trigger: frame, start: 'top 82%', once: true } });
+            tl.fromTo(
+              frame,
+              { clipPath: 'inset(100% 0% 0% 0%)' },
+              {
+                clipPath: 'inset(0% 0% 0% 0%)',
+                duration: 1.6,
+                ease: 'power3.inOut',
+                // "none" en línea (no clearProps): si se borra, vuelve la regla CSS que lo oculta.
+                onComplete: () => { frame.style.clipPath = 'none'; },
+              },
+            );
+            if (layer) tl.fromTo(layer, { scale: 1.25 }, { scale: 1, duration: 2.2, ease: 'power2.out' }, 0);
+          });
+
+          // Instalaciones: la foto se desliza dentro de su marco al hacer scroll.
+          gsap.utils.toArray('[data-parallax]').forEach((layer) => {
+            gsap.fromTo(
+              layer,
+              { yPercent: -6 },
+              {
+                yPercent: 6,
+                ease: 'none',
+                scrollTrigger: { trigger: layer.parentElement, start: 'top bottom', end: 'bottom top', scrub: true },
+              },
+            );
+          });
+
+          // Footer: la fachada de noche "enciende sus luces" conforme llegas al final.
+          const footerLights = document.querySelector('[data-footer-bg]');
+          if (footerLights) {
+            gsap.fromTo(
+              footerLights,
+              { filter: 'brightness(0.3) saturate(0.4)' },
+              {
+                filter: 'brightness(1) saturate(1)',
+                ease: 'power1.in',
+                scrollTrigger: { trigger: 'footer', start: 'top bottom', end: 'top 25%', scrub: true },
+              },
+            );
+          }
+
           // Contadores de la franja de confianza.
           gsap.utils.toArray('[data-count]').forEach((el) => {
             const to = parseFloat(el.dataset.count);

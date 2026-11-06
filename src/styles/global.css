@@ -84,6 +84,10 @@
   .js [data-reveal-stagger] > * {
     opacity: 0;
   }
+  /* El arco de la sala arranca cerrado: se descubre de abajo hacia arriba. */
+  .js [data-arch-reveal] {
+    clip-path: inset(100% 0 0 0);
+  }
 }
 
 /* Brillo dorado que sigue al cursor sobre las tarjetas (las coordenadas las pone el Layout). */
