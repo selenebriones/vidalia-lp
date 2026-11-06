@@ -94,7 +94,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
 
           gsap.utils.toArray('[data-reveal-stagger]').forEach((group) => {
             gsap.fromTo(
-              group.children,
+              [...group.children].filter((c) => !c.hasAttribute('data-split')),
               { y: 30, opacity: 0 },
               {
                 y: 0,
@@ -117,6 +117,94 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
               ease: 'none',
               scrollTrigger: { trigger: '#inicio', start: 'top top', end: 'bottom top', scrub: true },
             });
+          }
+
+          // Titular del hero: se parte en palabras y sube línea por línea desde una máscara.
+          gsap.utils.toArray('[data-split]').forEach((title) => {
+            const words = title.textContent.trim().split(/\s+/);
+            title.setAttribute('aria-label', words.join(' '));
+            title.textContent = '';
+            const inners = words.map((w, i) => {
+              const mask = document.createElement('span');
+              mask.className = 'split-mask';
+              mask.setAttribute('aria-hidden', 'true');
+              const inner = document.createElement('span');
+              inner.className = 'split-word';
+              inner.textContent = w;
+              mask.append(inner);
+              title.append(mask);
+              if (i < words.length - 1) title.append(' ');
+              return inner;
+            });
+            title.style.visibility = 'visible';
+            // Las palabras de un mismo renglón suben juntas.
+            const tops = [...new Set(inners.map((el) => el.parentElement.offsetTop))];
+            const lineOf = inners.map((el) => tops.indexOf(el.parentElement.offsetTop));
+            gsap.fromTo(
+              inners,
+              { yPercent: 110 },
+              { yPercent: 0, duration: 1.1, ease: 'power3.out', delay: 0.2, stagger: (i) => lineOf[i] * 0.15 },
+            );
+          });
+
+          // Filetes dorados que se trazan bajo los títulos de sección.
+          gsap.utils.toArray('[data-filete]').forEach((line) => {
+            gsap.fromTo(
+              line,
+              { scaleX: 0 },
+              {
+                scaleX: 1,
+                duration: 1.2,
+                ease: 'power3.inOut',
+                delay: 0.35,
+                scrollTrigger: { trigger: line, start: 'top 90%', once: true },
+              },
+            );
+          });
+
+          // Instalaciones: el arco de la sala se abre de abajo hacia arriba y la foto se asienta.
+          gsap.utils.toArray('[data-arch-reveal]').forEach((frame) => {
+            const layer = frame.querySelector('[data-parallax]');
+            const tl = gsap.timeline({ scrollTrigger: { trigger: frame, start: 'top 82%', once: true } });
+            tl.fromTo(
+              frame,
+              { clipPath: 'inset(100% 0% 0% 0%)' },
+              {
+                clipPath: 'inset(0% 0% 0% 0%)',
+                duration: 1.6,
+                ease: 'power3.inOut',
+                // "none" en línea (no clearProps): si se borra, vuelve la regla CSS que lo oculta.
+                onComplete: () => { frame.style.clipPath = 'none'; },
+              },
+            );
+            if (layer) tl.fromTo(layer, { scale: 1.25 }, { scale: 1, duration: 2.2, ease: 'power2.out' }, 0);
+          });
+
+          // Instalaciones: la foto se desliza dentro de su marco al hacer scroll.
+          gsap.utils.toArray('[data-parallax]').forEach((layer) => {
+            gsap.fromTo(
+              layer,
+              { yPercent: -6 },
+              {
+                yPercent: 6,
+                ease: 'none',
+                scrollTrigger: { trigger: layer.parentElement, start: 'top bottom', end: 'bottom top', scrub: true },
+              },
+            );
+          });
+
+          // Footer: la fachada de noche "enciende sus luces" conforme llegas al final.
+          const footerLights = document.querySelector('[data-footer-bg]');
+          if (footerLights) {
+            gsap.fromTo(
+              footerLights,
+              { filter: 'brightness(0.3) saturate(0.4)' },
+              {
+                filter: 'brightness(1) saturate(1)',
+                ease: 'power1.in',
+                scrollTrigger: { trigger: 'footer', start: 'top bottom', end: 'top 25%', scrub: true },
+              },
+            );
           }
 
           // Contadores de la franja de confianza.

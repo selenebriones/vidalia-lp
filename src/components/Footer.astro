@@ -61,7 +61,7 @@ const year = new Date().getFullYear();
     <div class="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-6 text-xs text-white/50 sm:flex-row sm:items-center sm:justify-between">
       <p>© {year} {SITE.name}. Contrato registrado ante PROFECO núm. {SITE.profeco}.</p>
       <ul class="flex gap-5">
-        <li><a href="#" class="transition hover:text-white">Aviso de privacidad</a></li>
+        <li><a href={SITE.privacyHref} target="_blank" rel="noopener" class="transition hover:text-white">Aviso de privacidad</a></li>
         <li><a href="#" class="transition hover:text-white">Términos y condiciones</a></li>
       </ul>
     </div>

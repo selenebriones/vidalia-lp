@@ -10,13 +10,17 @@ import { SITE, DISTINTO } from '../data/site';
       <h2 class="mt-2 text-3xl font-extrabold tracking-tight text-vidalia-blue sm:text-4xl">
         Nosotros lo hacemos distinto, nos encargamos de cada detalle.
       </h2>
+      <span data-filete class="mt-5 block h-0.5 w-20 origin-left rounded-full bg-gradient-to-r from-vidalia-gold to-vidalia-gold/20" aria-hidden="true"></span>
     </header>
 
     <div class="mt-12 grid gap-10 lg:grid-cols-[1.5fr_1fr]">
       <!-- Columna izquierda: foto principal y ubicación -->
       <div class="flex flex-col gap-10">
-        <button type="button" data-reveal data-lightbox="/img/sala-vidalia.webp" data-caption="Un espacio que abraza: sala climatizada, salas de estar y amplio estacionamiento." class="group relative block aspect-[4/3] w-full cursor-zoom-in overflow-hidden border-2 border-vidalia-gold shadow-soft [border-radius:12rem_12rem_1.5rem_1.5rem] sm:[border-radius:18rem_18rem_1.5rem_1.5rem]">
-          <Photo src="/img/sala-vidalia.webp" alt="Sala Vidalia climatizada con salas de estar" class="transition duration-700 group-hover:scale-105" />
+        <button type="button" data-arch-reveal data-lightbox="/img/sala-vidalia.webp" data-caption="Un espacio que abraza: sala climatizada, salas de estar y amplio estacionamiento." class="group relative block aspect-[4/3] w-full cursor-zoom-in overflow-hidden border-2 border-vidalia-gold shadow-soft [border-radius:12rem_12rem_1.5rem_1.5rem] sm:[border-radius:18rem_18rem_1.5rem_1.5rem]">
+          <!-- La capa es más alta que el marco para que la foto pueda deslizarse dentro (parallax). -->
+          <div data-parallax class="absolute inset-x-0 -top-[8%] h-[116%]">
+            <Photo src="/img/sala-vidalia.webp" alt="Sala Vidalia climatizada con salas de estar" class="transition duration-700 group-hover:scale-105" />
+          </div>
           <span class="pointer-events-none absolute inset-0 grid place-items-center bg-vidalia-deep/0 transition duration-500 group-hover:bg-vidalia-deep/25">
             <span class="flex translate-y-3 items-center gap-2 rounded-full bg-white/95 px-4 py-2 text-sm font-semibold text-vidalia-blue opacity-0 shadow-soft transition duration-500 group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100">
               <i class="ph-bold ph-magnifying-glass-plus" aria-hidden="true"></i> Ver foto
@@ -50,7 +54,9 @@ import { SITE, DISTINTO } from '../data/site';
       <!-- Columna derecha: foto secundaria, diferenciadores y CTA -->
       <div class="flex flex-col">
         <button type="button" data-reveal data-lightbox="/img/cafeteria-vidalia.webp" data-caption="Cafetería de especialidad" class="group relative block aspect-[4/3] w-full cursor-zoom-in overflow-hidden rounded-3xl border border-vidalia-gold/40">
-          <Photo src="/img/cafeteria-vidalia.webp" alt="Cafetería de especialidad de Vidalia" class="transition duration-700 group-hover:scale-105" />
+          <div data-parallax class="absolute inset-x-0 -top-[8%] h-[116%]">
+            <Photo src="/img/cafeteria-vidalia.webp" alt="Cafetería de especialidad de Vidalia" class="transition duration-700 group-hover:scale-105" />
+          </div>
           <span class="pointer-events-none absolute inset-0 grid place-items-center bg-vidalia-deep/0 transition duration-500 group-hover:bg-vidalia-deep/25">
             <span class="flex translate-y-3 items-center gap-2 rounded-full bg-white/95 px-4 py-2 text-sm font-semibold text-vidalia-blue opacity-0 shadow-soft transition duration-500 group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100">
               <i class="ph-bold ph-magnifying-glass-plus" aria-hidden="true"></i> Ver foto
@@ -98,17 +104,60 @@ import { SITE, DISTINTO } from '../data/site';
     if (!dlg || !dlg.showModal) return;
     const img = dlg.querySelector('img');
     const cap = dlg.querySelector('figcaption');
+    const closeBtn = dlg.querySelector('[data-close]');
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+    const EASE = 'cubic-bezier(.22,.8,.24,1)';
+    let origin = null;
+    let closing = false;
+
+    // Transformación que lleva la foto ampliada al lugar y tamaño de su miniatura.
+    const fromThumb = () => {
+      const t = origin.getBoundingClientRect();
+      const r = img.getBoundingClientRect();
+      const dx = t.left + t.width / 2 - (r.left + r.width / 2);
+      const dy = t.top + t.height / 2 - (r.top + r.height / 2);
+      return `translate(${dx}px, ${dy}px) scale(${t.width / r.width})`;
+    };
+    const fadeBackdrop = (frames, duration, fill = 'none') => {
+      try { dlg.animate(frames, { duration, fill, easing: 'ease-out', pseudoElement: '::backdrop' }); } catch (_) {}
+    };
+
     document.querySelectorAll('[data-lightbox]').forEach((btn) => {
-      btn.addEventListener('click', () => {
+      btn.addEventListener('click', async () => {
+        origin = btn;
         img.src = btn.dataset.lightbox;
         img.alt = btn.querySelector('img')?.alt || '';
         cap.textContent = btn.dataset.caption || '';
+        try { await img.decode(); } catch (_) {}
         dlg.showModal();
-        img.animate?.([{ opacity: 0, transform: 'scale(.96)' }, { opacity: 1, transform: 'scale(1)' }], { duration: 300, easing: 'ease-out' });
+        if (reduce.matches || !img.animate) return;
+        // La foto crece desde su miniatura; el pie y el botón aparecen después.
+        img.animate([{ transform: fromThumb(), opacity: 0.5 }, { transform: 'none', opacity: 1 }], { duration: 550, easing: EASE });
+        [cap, closeBtn].forEach((el) => el.animate([{ opacity: 0 }, { opacity: 0 }, { opacity: 1 }], { duration: 650, easing: 'ease-out' }));
+        fadeBackdrop([{ opacity: 0 }, { opacity: 1 }], 450);
       });
     });
-    dlg.querySelector('[data-close]').addEventListener('click', () => dlg.close());
+
+    // Al cerrar, la foto regresa a su miniatura.
+    const close = () => {
+      if (!dlg.open || closing) return;
+      if (reduce.matches || !img.animate || !origin) { dlg.close(); return; }
+      closing = true;
+      [cap, closeBtn].forEach((el) => el.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 150, fill: 'forwards' }));
+      fadeBackdrop([{ opacity: 1 }, { opacity: 0 }], 420, 'forwards');
+      const anim = img.animate([{ transform: 'none', opacity: 1 }, { transform: fromThumb(), opacity: 0.4 }], { duration: 420, easing: EASE, fill: 'forwards' });
+      anim.onfinish = () => {
+        dlg.close();
+        dlg.getAnimations({ subtree: true }).forEach((a) => a.cancel());
+        closing = false;
+        origin.focus({ preventScroll: true });
+      };
+    };
+
+    closeBtn.addEventListener('click', close);
     // Clic fuera de la foto (en el fondo) también cierra.
-    dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+    dlg.addEventListener('click', (e) => { if (e.target === dlg) close(); });
+    // Esc: animar en lugar de cerrar de golpe.
+    dlg.addEventListener('cancel', (e) => { e.preventDefault(); close(); });
   })();
 </script>

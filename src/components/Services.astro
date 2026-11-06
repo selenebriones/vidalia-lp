@@ -8,6 +8,7 @@ import { SITE, INMEDIATO, PAQUETE } from '../data/site';
     <header data-reveal class="mx-auto max-w-2xl text-center">
       <p class="font-script text-2xl text-vidalia-gold">Contigo en cada paso</p>
       <h2 class="mt-2 text-3xl font-extrabold tracking-tight text-vidalia-blue sm:text-4xl">Lo que hacemos por tu familia</h2>
+      <span data-filete class="mx-auto mt-5 block h-0.5 w-20 rounded-full bg-gradient-to-r from-vidalia-gold/30 via-vidalia-gold to-vidalia-gold/30" aria-hidden="true"></span>
     </header>
 
     <div data-reveal-stagger class="mt-14 grid items-stretch gap-6 lg:grid-cols-2">
@@ -31,6 +32,8 @@ import { SITE, INMEDIATO, PAQUETE } from '../data/site';
       </article>
 
       <article data-spotlight class="flex flex-col rounded-3xl bg-vidalia-blue p-8 text-white shadow-soft ring-2 ring-vidalia-gold transition duration-300 hover:-translate-y-1 hover:shadow-glow-gold sm:p-10">
+        <!-- Destello dorado que cruza la tarjeta cada tantos segundos. -->
+        <span class="destello pointer-events-none absolute inset-0 -z-10 overflow-hidden rounded-[inherit]" aria-hidden="true"></span>
         <p class="text-xs font-semibold tracking-[0.2em] text-vidalia-gold uppercase">Para dejarlo resuelto</p>
         <h3 class="mt-3 text-2xl font-bold sm:text-3xl">Paquete Vidalia · <span class="text-vidalia-gold">$238 a la quincena</span></h3>
         <ul data-reveal-stagger class="mt-7 space-y-3.5 text-white/85">
